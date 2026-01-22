@@ -19,7 +19,12 @@
         "command": "biome check --write {projectRoot}"
       },
       "cache": true,
-      "inputs": ["{projectRoot}/**/*", { "externalDependencies": ["@biomejs/biome"] }],
+      "inputs": [
+        "{projectRoot}/**/*",
+        {
+          "externalDependencies": ["@biomejs/biome"]
+        }
+      ],
       "outputs": []
     },
     "format": {
@@ -42,7 +47,8 @@
       },
       "library": {
         "style": "css",
-        "linter": "none"
+        "linter": "none",
+        "unitTestRunner": "none"
       }
     }
   }

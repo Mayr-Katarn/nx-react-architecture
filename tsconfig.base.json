@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nx-react-architecture/ui": ["libs/ui/src/index.ts"]
+      "@nx-react-architecture/ui": ["libs/ui/src/index.ts"],
+      "@nx-react-architecture/core": ["libs/core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

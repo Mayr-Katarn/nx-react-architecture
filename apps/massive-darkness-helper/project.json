@@ -1,0 +1,11 @@
+{
+  "name": "massive-darkness-helper",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/massive-darkness-helper/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "lint": {},
+    "format": {}
+  }
+}

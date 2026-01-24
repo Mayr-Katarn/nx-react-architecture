@@ -1,0 +1,223 @@
+/* Container */
+.container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  color: #c9a0dc;
+  margin: 0 0 1.5rem;
+  text-shadow: 0 0 15px rgba(139, 69, 139, 0.4);
+}
+
+/* Rules Section */
+.rulesSection {
+  /* No additional styles needed */
+}
+
+.rulesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Rule Card */
+.ruleCard {
+  background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+  border: 1px solid #3a2a4a;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ruleCard:hover {
+  border-color: #6b2557;
+  box-shadow: 0 5px 20px rgba(74, 25, 66, 0.3);
+}
+
+.ruleCard.expanded {
+  border-color: #9b59b6;
+  box-shadow: 0 10px 30px rgba(74, 25, 66, 0.4);
+}
+
+.ruleHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(
+    90deg,
+    rgba(74, 25, 66, 0.2) 0%,
+    transparent 100%
+  );
+}
+
+.ruleIcon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 5px rgba(155, 89, 182, 0.5));
+}
+
+.ruleTitle {
+  margin: 0;
+  flex: 1;
+  font-size: 1.1rem;
+  color: #e8e6e3;
+  font-weight: 600;
+}
+
+.expandIcon {
+  color: #9b59b6;
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.expandIcon.rotated {
+  transform: rotate(180deg);
+}
+
+.ruleContent {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.ruleCard.expanded .ruleContent {
+  max-height: 200px;
+  padding: 0 1.25rem 1rem;
+}
+
+.ruleContent p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #b0b0b0;
+  line-height: 1.6;
+}
+
+/* Dice Section */
+.diceSection {
+  /* No additional styles needed */
+}
+
+.diceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* Dice Card */
+.diceCard {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+  border: 1px solid #3a2a4a;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.diceCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--dice-color);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 0 20px color-mix(in srgb, var(--dice-color) 30%, transparent);
+}
+
+.diceVisual {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    color-mix(in srgb, var(--dice-color) 80%, white),
+    var(--dice-color),
+    color-mix(in srgb, var(--dice-color) 80%, black)
+  );
+  border-radius: 12px;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    0 4px 10px rgba(0, 0, 0, 0.4);
+  animation: diceFloat 3s ease-in-out infinite;
+}
+
+@keyframes diceFloat {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+.diceIcon {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow:
+    -12px -12px 0 rgba(255, 255, 255, 0.9),
+    12px -12px 0 rgba(255, 255, 255, 0.9),
+    -12px 12px 0 rgba(255, 255, 255, 0.9),
+    12px 12px 0 rgba(255, 255, 255, 0.9);
+}
+
+.diceInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.diceName {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  color: var(--dice-color);
+  font-weight: 600;
+}
+
+.diceDescription {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+.diceSymbols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.symbol {
+  padding: 0.25rem 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: #c9c9c9;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .diceCard {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .diceSymbols {
+    justify-content: center;
+  }
+}

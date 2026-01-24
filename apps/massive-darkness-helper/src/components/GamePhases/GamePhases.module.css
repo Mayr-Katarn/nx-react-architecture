@@ -1,0 +1,303 @@
+/* Container */
+.container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  color: #c9a0dc;
+  margin: 0 0 0.5rem;
+  text-shadow: 0 0 20px rgba(139, 69, 139, 0.5);
+}
+
+.subtitle {
+  text-align: center;
+  color: #888;
+  margin: 0 0 2rem;
+}
+
+/* Phases Circle */
+.phasesCircle {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 0 auto 2rem;
+}
+
+/* Center Circle */
+.centerCircle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(145deg, #2a1a3a 0%, #1a0a2a 100%);
+  border: 2px solid #4a1942;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 30px rgba(74, 25, 66, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.centerIcon {
+  font-size: 2rem;
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.centerText {
+  font-size: 0.8rem;
+  color: #9b59b6;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Connections SVG */
+.connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.connectionPath {
+  fill: none;
+  stroke: url(#lineGradient);
+  stroke-width: 2;
+  stroke-dasharray: 8 4;
+  animation: dash 20s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+/* Phase Node */
+.phaseNode {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(145deg, #2a1a3a 0%, #1a0a2a 100%);
+  border: 2px solid var(--phase-color, #4a1942);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  z-index: 5;
+}
+
+.phaseNode:hover {
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  border-color: var(--phase-color);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 20px color-mix(in srgb, var(--phase-color) 40%, transparent);
+}
+
+.phaseNode.active {
+  transform: translate(-50%, -50%) scale(1.15) !important;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--phase-color) 30%, #2a1a3a) 0%,
+    #1a0a2a 100%
+  );
+  border-width: 3px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px color-mix(in srgb, var(--phase-color) 50%, transparent);
+}
+
+.phaseNumber {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 28px;
+  height: 28px;
+  background: var(--phase-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.phaseIcon {
+  font-size: 1.75rem;
+  filter: drop-shadow(0 0 5px var(--phase-color));
+}
+
+.phaseName {
+  font-size: 0.7rem;
+  color: #c9c9c9;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Details Container */
+.detailsContainer {
+  min-height: 250px;
+}
+
+.selectHint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  border: 2px dashed #3a2a4a;
+}
+
+.hintIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.selectHint p {
+  margin: 0;
+  color: #888;
+}
+
+/* Phase Details */
+.details {
+  background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+  border: 2px solid var(--phase-color, #4a1942);
+  border-radius: 16px;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.3),
+    0 0 20px color-mix(in srgb, var(--phase-color) 20%, transparent);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detailsHeader {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detailsIcon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 10px var(--phase-color));
+}
+
+.detailsTitle {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+  color: var(--phase-color);
+}
+
+.detailsDescription {
+  margin: 0;
+  color: #b0b0b0;
+  font-size: 0.95rem;
+}
+
+.detailsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detailItem {
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border-left: 3px solid var(--phase-color);
+  font-size: 0.9rem;
+  color: #c9c9c9;
+  transition: all 0.2s ease;
+}
+
+.detailItem:hover {
+  background: rgba(0, 0, 0, 0.3);
+  transform: translateX(5px);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .phasesCircle {
+    width: 300px;
+    height: 300px;
+  }
+
+  .centerCircle {
+    width: 70px;
+    height: 70px;
+  }
+
+  .centerIcon {
+    font-size: 1.5rem;
+  }
+
+  .phaseNode {
+    width: 70px;
+    height: 70px;
+  }
+
+  .phaseIcon {
+    font-size: 1.25rem;
+  }
+
+  .phaseName {
+    font-size: 0.6rem;
+  }
+}

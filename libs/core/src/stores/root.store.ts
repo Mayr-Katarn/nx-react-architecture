@@ -1,5 +1,11 @@
 import { makeAutoObservable } from 'mobx';
 import { createContext, useContext } from 'react';
+import { AlertStore } from './alert.store';
+import { AppStore } from './app.store';
+import { ComponentRegistryStore } from './component-registry.store';
+import { ModalStore } from './modal.store';
+import { PreloaderStore } from './preloader.store';
+import { TechScreenStore } from './tech-screen.store';
 
 /**
  * RootStore - глобальное хранилище приложения.
@@ -11,10 +17,10 @@ import { createContext, useContext } from 'react';
  * ```tsx
  * // В приложении
  * const rootStore = new RootStore();
+ * await rootStore.init();
  *
  * // В компоненте
- * const { appStore } = useRootStore();
- * console.log(appStore.isInitialized);
+ * const { appStore, modalStore, alertStore } = useRootStore();
  * ```
  */
 export class RootStore {
@@ -23,8 +29,39 @@ export class RootStore {
    */
   appStore: AppStore;
 
+  /**
+   * Хранилище прелоадера
+   */
+  preloaderStore: PreloaderStore;
+
+  /**
+   * Хранилище технических экранов
+   */
+  techScreenStore: TechScreenStore;
+
+  /**
+   * Хранилище модальных окон
+   */
+  modalStore: ModalStore;
+
+  /**
+   * Хранилище алертов
+   */
+  alertStore: AlertStore;
+
+  /**
+   * Реестр компонентов
+   */
+  componentRegistry: ComponentRegistryStore;
+
   constructor() {
     this.appStore = new AppStore(this);
+    this.preloaderStore = new PreloaderStore(this);
+    this.techScreenStore = new TechScreenStore(this);
+    this.modalStore = new ModalStore(this);
+    this.alertStore = new AlertStore(this);
+    this.componentRegistry = new ComponentRegistryStore(this);
+
     makeAutoObservable(this);
   }
 
@@ -33,72 +70,6 @@ export class RootStore {
    */
   async init(): Promise<void> {
     await this.appStore.init();
-  }
-}
-
-/**
- * AppStore - хранилище общего состояния приложения.
- */
-export class AppStore {
-  /**
-   * Ссылка на RootStore для доступа к другим stores
-   */
-  readonly rootStore: RootStore;
-
-  /**
-   * Флаг инициализации приложения
-   */
-  isInitialized = false;
-
-  /**
-   * Текущая тема
-   */
-  theme: 'light' | 'dark' = 'light';
-
-  constructor(rootStore: RootStore) {
-    this.rootStore = rootStore;
-    makeAutoObservable(this);
-  }
-
-  /**
-   * Инициализация store
-   */
-  async init(): Promise<void> {
-    // Здесь можно загрузить начальные данные
-    // например, из localStorage или API
-    this.loadThemeFromStorage();
-    this.isInitialized = true;
-  }
-
-  /**
-   * Переключить тему
-   */
-  toggleTheme(): void {
-    this.theme = this.theme === 'light' ? 'dark' : 'light';
-    this.saveThemeToStorage();
-  }
-
-  /**
-   * Установить тему
-   */
-  setTheme(theme: 'light' | 'dark'): void {
-    this.theme = theme;
-    this.saveThemeToStorage();
-  }
-
-  private loadThemeFromStorage(): void {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'light' || saved === 'dark') {
-        this.theme = saved;
-      }
-    }
-  }
-
-  private saveThemeToStorage(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', this.theme);
-    }
   }
 }
 
@@ -128,4 +99,39 @@ export function useRootStore(): RootStore {
  */
 export function useAppStore(): AppStore {
   return useRootStore().appStore;
+}
+
+/**
+ * Hook для доступа к PreloaderStore
+ */
+export function usePreloaderStore(): PreloaderStore {
+  return useRootStore().preloaderStore;
+}
+
+/**
+ * Hook для доступа к TechScreenStore
+ */
+export function useTechScreenStore(): TechScreenStore {
+  return useRootStore().techScreenStore;
+}
+
+/**
+ * Hook для доступа к ModalStore
+ */
+export function useModalStore(): ModalStore {
+  return useRootStore().modalStore;
+}
+
+/**
+ * Hook для доступа к AlertStore
+ */
+export function useAlertStore(): AlertStore {
+  return useRootStore().alertStore;
+}
+
+/**
+ * Hook для доступа к ComponentRegistryStore
+ */
+export function useComponentRegistry(): ComponentRegistryStore {
+  return useRootStore().componentRegistry;
 }

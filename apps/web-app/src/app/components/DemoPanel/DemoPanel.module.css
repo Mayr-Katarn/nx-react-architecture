@@ -1,0 +1,125 @@
+.panel {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+}
+
+.title {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.section {
+  margin-bottom: 1.5rem;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buttonPrimary {
+  background: #667eea;
+  color: white;
+}
+
+.buttonPrimary:hover {
+  background: #5a67d8;
+}
+
+.buttonSuccess {
+  background: #48bb78;
+  color: white;
+}
+
+.buttonSuccess:hover {
+  background: #38a169;
+}
+
+.buttonWarning {
+  background: #ed8936;
+  color: white;
+}
+
+.buttonWarning:hover {
+  background: #dd6b20;
+}
+
+.buttonDanger {
+  background: #f56565;
+  color: white;
+}
+
+.buttonDanger:hover {
+  background: #e53e3e;
+}
+
+.buttonInfo {
+  background: #4299e1;
+  color: white;
+}
+
+.buttonInfo:hover {
+  background: #3182ce;
+}
+
+.buttonOutline {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+.buttonOutline:hover {
+  background: #f7fafc;
+}
+
+/* Dark theme */
+.dark .panel {
+  background: #2d3748;
+}
+
+.dark .title {
+  color: #f7fafc;
+}
+
+.dark .sectionTitle {
+  color: #a0aec0;
+}
+
+.dark .buttonOutline {
+  border-color: #4a5568;
+  color: #a0aec0;
+}
+
+.dark .buttonOutline:hover {
+  background: #4a5568;
+}

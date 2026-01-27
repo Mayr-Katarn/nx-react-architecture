@@ -1,0 +1,72 @@
+.container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #1a202c;
+  color: white;
+  z-index: 99999;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 500px;
+  text-align: center;
+}
+
+.icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.message {
+  font-size: 1rem;
+  color: #a0aec0;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.retryButton {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background: #667eea;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.retryButton:hover {
+  background: #5a67d8;
+}
+
+.retryButton:active {
+  transform: scale(0.98);
+}
+
+/* Type variants */
+.maintenance .icon {
+  color: #f6ad55;
+}
+
+.update .icon {
+  color: #68d391;
+}
+
+.error .icon {
+  color: #fc8181;
+}
+
+.custom .icon {
+  color: #63b3ed;
+}

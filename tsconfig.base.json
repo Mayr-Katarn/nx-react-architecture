@@ -15,8 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nx-react-architecture/ui": ["libs/ui/src/index.ts"],
-      "@nx-react-architecture/core": ["libs/core/src/index.ts"]
+      "@nx-react-architecture/analytics": ["libs/analytics/src/index.ts"],
+      "@nx-react-architecture/api": ["libs/api/src/index.ts"],
+      "@nx-react-architecture/core": ["libs/core/src/index.ts"],
+      "@nx-react-architecture/i18n": ["libs/i18n/src/index.ts"],
+      "@nx-react-architecture/ui": ["libs/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

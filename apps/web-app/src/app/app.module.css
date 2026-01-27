@@ -26,9 +26,17 @@
 }
 
 .header p {
-  margin: 0 0 1rem;
+  margin: 0 0 1.5rem;
   color: #64748b;
   transition: color 0.3s ease;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .themeButton {
@@ -46,12 +54,54 @@
   background: #5a67d8;
 }
 
+.localeButtons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.localeButton {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.localeButton:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.localeButton:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+.localeButton.active {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.localeButton:hover:not(.active) {
+  background: #f7fafc;
+}
+
 .main {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+}
+
+.mainContent {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .footer {
@@ -97,6 +147,22 @@
 
 .dark .themeButton:hover {
   background: #6b46c1;
+}
+
+.dark .localeButton {
+  background: #4a5568;
+  border-color: #4a5568;
+  color: #a0aec0;
+}
+
+.dark .localeButton.active {
+  background: #805ad5;
+  border-color: #805ad5;
+  color: white;
+}
+
+.dark .localeButton:hover:not(.active) {
+  background: #2d3748;
 }
 
 .dark .footer {

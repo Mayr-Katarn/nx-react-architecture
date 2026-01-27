@@ -1,0 +1,49 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "close": "Close"
+  },
+  "welcome": {
+    "title": "Welcome",
+    "subtitle": "Nx + React + MobX Architecture",
+    "description": "This is a demo application showcasing MVVM pattern"
+  },
+  "counter": {
+    "title": "Counter",
+    "increment": "Increment",
+    "decrement": "Decrement",
+    "reset": "Reset",
+    "step": "Step",
+    "value": "Value: {{value}}"
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "techScreen": {
+    "maintenance": {
+      "title": "Maintenance",
+      "message": "We are currently performing scheduled maintenance. Please try again later."
+    },
+    "update": {
+      "title": "Update Required",
+      "message": "Please refresh the page to get the latest version."
+    },
+    "error": {
+      "title": "Something went wrong",
+      "message": "An unexpected error occurred. Please try again."
+    }
+  },
+  "alerts": {
+    "saved": "Changes saved successfully",
+    "deleted": "Item deleted",
+    "error": "An error occurred"
+  }
+}

@@ -1,32 +1,45 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, observable } from 'mobx';
 import type { ComponentType } from 'react';
 import type { RootStore } from './root.store';
 
 /**
  * Приоритеты модальных окон
  */
-export const ModalPriority = {
-  LOW: 0,
-  NORMAL: 50,
-  HIGH: 100,
-  CRITICAL: 200,
-} as const;
+export enum ModalPriority {
+  LOW = 0,
+  NORMAL = 50,
+  HIGH = 100,
+  CRITICAL = 200,
+}
 
-export type ModalPriorityValue =
-  (typeof ModalPriority)[keyof typeof ModalPriority];
+/**
+ * Типы модальных окон (стандартные)
+ */
+export enum ModalType {
+  CONFIRM = 'confirm',
+  ALERT = 'alert',
+  DELETE = 'delete',
+  EDIT = 'edit',
+  CREATE = 'create',
+  INFO = 'info',
+  WARNING = 'warning',
+  ERROR = 'error',
+  SUCCESS = 'success',
+  CUSTOM = 'custom',
+}
 
 /**
  * Конфигурация модального окна
  */
 export interface ModalConfig<TProps = Record<string, unknown>> {
-  /** Уникальный идентификатор */
-  id: string;
+  /** Уникальный идентификатор (стандартный тип или кастомная строка) */
+  id: ModalType | string;
   /** React компонент модалки */
   component: ComponentType<TProps & { onClose: () => void }>;
   /** Props для компонента */
   props?: TProps;
   /** Приоритет (чем выше, тем "важнее") */
-  priority?: ModalPriorityValue;
+  priority?: ModalPriority;
   /** Можно ли закрыть по клику на overlay */
   closeOnOverlay?: boolean;
   /** Можно ли закрыть по Escape */
@@ -45,16 +58,23 @@ export interface ModalConfig<TProps = Record<string, unknown>> {
  * ```tsx
  * const { modalStore } = useRootStore();
  *
- * // Открыть модалку
+ * // Открыть модалку со стандартным типом
  * modalStore.open({
- *   id: 'confirm-delete',
+ *   id: ModalType.CONFIRM,
  *   component: ConfirmModal,
  *   props: { title: 'Delete item?' },
  *   priority: ModalPriority.HIGH,
  * });
  *
+ * // Или с кастомным id
+ * modalStore.open({
+ *   id: 'my-custom-modal',
+ *   component: CustomModal,
+ *   priority: ModalPriority.NORMAL,
+ * });
+ *
  * // Закрыть конкретную
- * modalStore.close('confirm-delete');
+ * modalStore.close(ModalType.CONFIRM);
  *
  * // Закрыть все
  * modalStore.closeAll();
@@ -66,12 +86,15 @@ export class ModalStore {
   /**
    * Очередь модальных окон
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modals: ModalConfig<any>[] = [];
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
-    makeAutoObservable(this, undefined, { autoBind: true });
+    makeAutoObservable(
+      this,
+      { modals: observable.shallow },
+      { autoBind: true },
+    );
   }
 
   /**
@@ -83,7 +106,9 @@ export class ModalStore {
 
     // Сортировка по приоритету (desc) и времени добавления
     const sorted = [...this.modals].sort(
-      (a, b) => (b.priority ?? ModalPriority.NORMAL) - (a.priority ?? ModalPriority.NORMAL)
+      (a, b) =>
+        (b.priority ?? ModalPriority.NORMAL) -
+        (a.priority ?? ModalPriority.NORMAL),
     );
 
     return sorted[0] ?? null;
@@ -124,7 +149,7 @@ export class ModalStore {
   /**
    * Закрыть модальное окно по id
    */
-  close(id: string): void {
+  close(id: ModalType | string): void {
     const modal = this.modals.find((m) => m.id === id);
     if (modal) {
       modal.onClose?.();
@@ -146,14 +171,16 @@ export class ModalStore {
    * Закрыть все модалки
    */
   closeAll(): void {
-    this.modals.forEach((m) => m.onClose?.());
+    this.modals.forEach((m) => {
+      m.onClose?.();
+    });
     this.modals = [];
   }
 
   /**
    * Проверить, открыта ли модалка
    */
-  isOpen(id: string): boolean {
+  isOpen(id: ModalType | string): boolean {
     return this.modals.some((m) => m.id === id);
   }
 

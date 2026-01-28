@@ -2,6 +2,7 @@ import { useAnalytics } from '@nx-react-architecture/analytics';
 import { useApi } from '@nx-react-architecture/api';
 import {
   ModalPriority,
+  ModalType,
   observer,
   useRootStore,
 } from '@nx-react-architecture/core';
@@ -86,7 +87,7 @@ export const DemoPanel = observer<{ dark?: boolean }>(({ dark }) => {
   // === MODALS ===
   const openModal = () => {
     modalStore.open({
-      id: 'demo-confirm',
+      id: ModalType.CONFIRM,
       component: ConfirmModal,
       props: { message: 'This is a demo modal with priority system.' },
       priority: ModalPriority.NORMAL,
@@ -96,7 +97,7 @@ export const DemoPanel = observer<{ dark?: boolean }>(({ dark }) => {
 
   const openHighPriorityModal = () => {
     modalStore.open({
-      id: 'demo-high-priority',
+      id: ModalType.WARNING,
       component: ConfirmModal,
       props: { message: 'This modal has HIGH priority!' },
       priority: ModalPriority.HIGH,

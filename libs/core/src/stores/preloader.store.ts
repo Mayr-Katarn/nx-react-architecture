@@ -57,7 +57,7 @@ export class PreloaderStore {
     if (this.assets.size === 0) return 100;
 
     const loaded = Array.from(this.assets.values()).filter(
-      (a) => a.status === 'loaded'
+      (a) => a.status === 'loaded',
     ).length;
 
     return Math.round((loaded / this.assets.size) * 100);

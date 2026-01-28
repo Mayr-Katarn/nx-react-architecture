@@ -1,6 +1,5 @@
-import { observer } from 'mobx-react-lite';
 import { useModalStore } from '@nx-react-architecture/core';
-import { Modal } from '../Modal';
+import { observer } from 'mobx-react-lite';
 
 /**
  * ModalLayer — слой рендеринга модальных окон.

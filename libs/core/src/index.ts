@@ -10,7 +10,18 @@ export { observer } from 'mobx-react-lite';
 
 // Config
 export { setupMobX } from './config';
-
+// Store Types
+export type {
+  AlertConfig,
+  AlertType,
+  AssetInfo,
+  ComponentPosition,
+  ComponentRef,
+  ComponentSize,
+  ModalConfig,
+  TechScreenConfig,
+  TechScreenType,
+} from './stores';
 // Stores
 export {
   // Alert
@@ -22,6 +33,7 @@ export {
   // Modal
   ModalPriority,
   ModalStore,
+  ModalType,
   // Preloader
   PreloaderStore,
   // Root
@@ -37,20 +49,6 @@ export {
   usePreloaderStore,
   useRootStore,
   useTechScreenStore,
-} from './stores';
-
-// Store Types
-export type {
-  AlertConfig,
-  AlertType,
-  AssetInfo,
-  ComponentPosition,
-  ComponentRef,
-  ComponentSize,
-  ModalConfig,
-  ModalPriorityValue,
-  TechScreenConfig,
-  TechScreenType,
 } from './stores';
 
 // ViewModels

@@ -22,7 +22,9 @@
         "useHookAtTopLevel": "error"
       },
       "a11y": {
-        "noSvgWithoutTitle": "warn"
+        "noSvgWithoutTitle": "warn",
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "warn"

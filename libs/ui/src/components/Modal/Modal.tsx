@@ -72,13 +72,13 @@ export const Modal = observer<ModalProps>(
     }, [closeOnEscape, onClose]);
 
     // Блокировка скролла body
-    useEffect(() => {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }, []);
+    // useEffect(() => {
+    //   const originalOverflow = document.body.style.overflow;
+    //   document.body.style.overflow = 'hidden';
+    //   return () => {
+    //     document.body.style.overflow = originalOverflow;
+    //   };
+    // }, []);
 
     const handleOverlayClick = (e: React.MouseEvent) => {
       if (closeOnOverlay && e.target === e.currentTarget) {
@@ -114,7 +114,7 @@ export const Modal = observer<ModalProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default Modal;

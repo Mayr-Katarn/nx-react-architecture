@@ -1,21 +1,21 @@
-# Система модальных окон — подробное объяснение
+# Система модальных окон — Zustand
 
 ## Архитектура
 
-Система состоит из 3 ключевых компонентов:
+Система построена на **Zustand** для state management вместо MobX, обеспечивая более простую и производительную реализацию.
 
 ```mermaid
 flowchart TB
     App[App.tsx] --> ModalLayer
-    ModalLayer --> ModalStore
-    ModalStore --> |currentModal| ModalLayer
+    ModalLayer --> ZustandStore[useModalStore Zustand]
+    ZustandStore --> |currentModal| ModalLayer
     ModalLayer --> |рендерит| CustomModal[ConfirmModal, DeleteModal, etc.]
     CustomModal --> |использует| BaseModal[Modal компонент]
 ```
 
-## 1. **ModalStore** (State Management)
+## 1. **useModalStore** (Zustand Store)
 
-Центральное хранилище состояния всех модалок в приложении.
+Центральное хранилище состояния всех модалок в приложении на базе Zustand.
 
 ### Ключевые особенности:
 
@@ -45,50 +45,79 @@ enum ModalType {
 }
 ```
 
-**Структура данных:**
-- `modals: ModalConfig[]` — очередь всех модалок (массив)
-- `currentModal` — **computed getter**, который сортирует по приоритету и возвращает модалку с наивысшим приоритетом
-- Использует `observable.shallow` для предотвращения глубокого отслеживания React компонентов
+**Структура store:**
+```typescript
+interface ModalStore {
+  // State
+  modals: ModalConfig[];
+  
+  // Computed (getters)
+  currentModal: ModalConfig | null;
+  hasModals: boolean;
+  count: number;
+  
+  // Actions
+  open: (config: ModalConfig) => void;
+  close: (id: ModalType | string) => void;
+  closeCurrent: () => void;
+  closeAll: () => void;
+  isOpen: (id: ModalType | string) => boolean;
+  handleEscape: () => void;
+  handleOverlayClick: () => void;
+}
+```
 
-### Основные методы:
+### Использование:
 
 ```typescript
-// Открыть модалку со стандартным типом
-modalStore.open({
-  id: ModalType.CONFIRM,          // Стандартный тип из enum
-  component: ConfirmModal,         // React компонент
-  props: { message: 'Delete?' },  // Props для компонента
-  priority: ModalPriority.HIGH,   // Приоритет
-  closeOnOverlay: true,           // Закрывать по клику вне
-  closeOnEscape: true,            // Закрывать по Escape
-  onClose: () => {...}            // Callback после закрытия
-});
+import { useModalStore, ModalType, ModalPriority } from '@nx-react-architecture/core';
 
-// Или с кастомным ID
-modalStore.open({
-  id: 'my-custom-modal-id',       // Кастомная строка
-  component: CustomModal,
-  priority: ModalPriority.NORMAL,
-});
+function MyComponent() {
+  // Выбираем только нужные части store (оптимизация рендеров)
+  const open = useModalStore((state) => state.open);
+  const close = useModalStore((state) => state.close);
+  const currentModal = useModalStore((state) => state.currentModal);
+  
+  // Или деструктурируем все сразу (осторожно с перерендерами)
+  const { open, close, currentModal } = useModalStore();
 
-// Закрыть конкретную
-modalStore.close(ModalType.CONFIRM);
+  // Открыть модалку со стандартным типом
+  const handleOpen = () => {
+    open({
+      id: ModalType.CONFIRM,          // Стандартный тип из enum
+      component: ConfirmModal,         // React компонент
+      props: { message: 'Delete?' },  // Props для компонента
+      priority: ModalPriority.HIGH,   // Приоритет
+      closeOnOverlay: true,           // Закрывать по клику вне
+      closeOnEscape: true,            // Закрывать по Escape
+      onClose: () => {...}            // Callback после закрытия
+    });
+  };
 
-// Закрыть текущую (активную)
-modalStore.closeCurrent();
+  // Или с кастомным ID
+  const handleOpenCustom = () => {
+    open({
+      id: 'my-custom-modal-id',       // Кастомная строка
+      component: CustomModal,
+      priority: ModalPriority.NORMAL,
+    });
+  };
 
-// Закрыть все
-modalStore.closeAll();
+  // Закрыть конкретную
+  const handleClose = () => close(ModalType.CONFIRM);
+}
 ```
 
 ### Логика приоритетов:
 
 ```typescript
-get currentModal(): ModalConfig | null {
-  if (this.modals.length === 0) return null;
+// В Zustand это вычисляемое свойство (getter)
+get currentModal() {
+  const { modals } = get();
+  if (modals.length === 0) return null;
   
   // Сортировка по приоритету (от большего к меньшему)
-  const sorted = [...this.modals].sort(
+  const sorted = [...modals].sort(
     (a, b) => (b.priority ?? 50) - (a.priority ?? 50)
   );
   
@@ -110,35 +139,37 @@ get currentModal(): ModalConfig | null {
 
 ## 2. **ModalLayer** (Renderer)
 
-React компонент, который рендерит **только одну** (текущую) модалку.
+React компонент, который рендерит **только одну** (текущую) модалку. Использует селекторы Zustand для оптимизации.
 
 ### Принцип работы:
 
 ```typescript
-export const ModalLayer = observer(() => {
-  const modalStore = useModalStore();
-  const current = modalStore.currentModal; // Реактивно следит за изменениями
+export const ModalLayer = () => {
+  // Селекторы Zustand - подписка только на нужные части store
+  const currentModal = useModalStore((state) => state.currentModal);
+  const close = useModalStore((state) => state.close);
   
-  if (!current) return null; // Нет модалок → ничего не рендерим
+  if (!currentModal) return null;
   
-  const { component: Component, props, id } = current;
+  const { component: Component, props, id } = currentModal;
   
   const handleClose = () => {
-    modalStore.close(id);
+    close(id);
   };
   
   // Рендерим компонент с его props + добавляем onClose
   return <Component {...props} onClose={handleClose} />;
-});
+};
 ```
 
 **Важно:**
-- `observer` делает компонент реактивным — автоматически перерендеривается при изменении `currentModal`
+- **Нет обёртки `observer`** — Zustand автоматически управляет подписками
+- **Селекторы** оптимизируют рендеры — компонент перерендерится только при изменении `currentModal` или `close`
 - Передаёт `onClose` колбэк каждой модалке для закрытия
 
 ## 3. **Modal** (Base Component)
 
-Базовый UI компонент модального окна с общим функционалом.
+Базовый UI компонент модального окна (не изменился).
 
 ### Функциональность:
 
@@ -181,13 +212,19 @@ useEffect(() => {
 
 ## Полный цикл работы
 
-### 1. Инициализация (main.tsx)
+### 1. Инициализация
+
+Zustand store создаётся автоматически при импорте:
+
 ```typescript
-const rootStore = new RootStore(); // Содержит modalStore
-<RootStoreProvider value={rootStore}>
-  <App />
-</RootStoreProvider>
+// libs/core/src/stores/modal.store.ts
+export const useModalStore = create<ModalStore>()((set, get) => ({
+  modals: [],
+  // ... actions
+}));
 ```
+
+**Не требуется** Provider или инициализация в `main.tsx` — store готов к использованию сразу!
 
 ### 2. Размещение слоя (App.tsx)
 ```typescript
@@ -202,72 +239,116 @@ const rootStore = new RootStore(); // Содержит modalStore
 ### 3. Создание своей модалки
 ```typescript
 // Компонент должен принимать onClose
-const ConfirmModal = observer<{ onClose: () => void; message?: string }>(
-  ({ onClose, message }) => {
-    return (
-      <Modal title="Подтверждение" onClose={onClose}>
-        <p>{message}</p>
-        <button onClick={onClose}>OK</button>
-      </Modal>
-    );
-  }
-);
+const ConfirmModal = ({ onClose, message }: { onClose: () => void; message?: string }) => {
+  return (
+    <Modal title="Подтверждение" onClose={onClose}>
+      <p>{message}</p>
+      <button onClick={onClose}>OK</button>
+    </Modal>
+  );
+};
 ```
 
 ### 4. Открытие модалки
 ```typescript
+import { useModalStore, ModalType, ModalPriority } from '@nx-react-architecture/core';
+
 const MyComponent = () => {
-  const { modalStore } = useRootStore();
+  const open = useModalStore((state) => state.open);
   
   const handleDelete = () => {
-    modalStore.open({
-      id: ModalType.DELETE,  // Используем enum для стандартных типов
+    open({
+      id: ModalType.DELETE,
       component: ConfirmModal,
       props: { message: 'Удалить элемент?' },
       priority: ModalPriority.HIGH,
     });
   };
+  
+  return <button onClick={handleDelete}>Delete</button>;
 };
 ```
 
 ### 5. Жизненный цикл модалки
 
 ```
-1. modalStore.open() → добавляет в modals[]
-2. currentModal getter → вычисляет модалку с max приоритетом
-3. ModalLayer (observer) → автоматически перерендеривается
+1. open(config) → добавляет в modals[] через set()
+2. currentModal getter → автоматически пересчитывается
+3. ModalLayer → Zustand триггерит ререндер через селектор
 4. ModalLayer → рендерит Component с props + onClose
 5. Пользователь закрывает → вызывается onClose
-6. onClose → modalStore.close(id)
-7. close() → удаляет из modals[], вызывает config.onClose
-8. currentModal пересчитывается → следующая по приоритету или null
-9. ModalLayer перерендеривается → показывает следующую или null
+6. onClose → close(id) → set() удаляет из modals[], вызывает config.onClose
+7. currentModal пересчитывается → следующая по приоритету или null
+8. ModalLayer → Zustand триггерит ререндер → показывает следующую или null
 ```
 
-## Преимущества архитектуры
+## Преимущества Zustand vs MobX
 
-1. **Decoupled state** — состояние модалок отделено от UI
-2. **Приоритеты** — автоматическое управление важностью
-3. **Очередь** — можно открыть несколько, показывается важнейшая
-4. **Type-safe** — TypeScript обеспечивает типобезопасность props
-5. **Переиспользуемость** — любой компонент может открыть модалку
-6. **Централизованное управление** — один store для всех модалок
+### ✅ Zustand
+- **Простота**: Нет классов, декораторов, observer
+- **Размер**: ~1KB vs ~16KB (MobX)
+- **API**: Хуки из коробки, привычный для React
+- **TypeScript**: Отличная типизация без боли
+- **Селекторы**: Встроенная оптимизация рендеров
+- **DevTools**: Redux DevTools из коробки
+- **Нет провайдеров**: Store доступен глобально
+
+### Сравнение кода
+
+**MobX (было):**
+```typescript
+export class ModalStore {
+  modals: ModalConfig[] = [];
+  
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
+    makeAutoObservable(this, { modals: observable.shallow });
+  }
+  
+  get currentModal() { ... }
+  
+  open(config) { ... }
+}
+
+// В компоненте
+const { modalStore } = useRootStore();
+const Component = observer(() => {
+  modalStore.open({ ... });
+});
+```
+
+**Zustand (стало):**
+```typescript
+export const useModalStore = create<ModalStore>()((set, get) => ({
+  modals: [],
+  
+  get currentModal() { ... },
+  
+  open: (config) => { ... },
+}));
+
+// В компоненте (без observer!)
+const open = useModalStore((state) => state.open);
+open({ ... });
+```
 
 ## Пример сложного сценария
 
 ```typescript
+const { open, close } = useModalStore();
+
 // Открываем 3 модалки подряд
-modalStore.open({ 
+open({ 
   id: ModalType.INFO, 
   component: InfoModal, 
   priority: ModalPriority.NORMAL 
 });
-modalStore.open({ 
+open({ 
   id: ModalType.WARNING, 
   component: WarningModal, 
   priority: ModalPriority.HIGH 
 });
-modalStore.open({ 
+open({ 
   id: ModalType.ERROR, 
   component: ErrorModal, 
   priority: ModalPriority.CRITICAL 
@@ -276,38 +357,71 @@ modalStore.open({
 // Пользователь видит только ErrorModal (priority: 200)
 
 // Закрываем критическую
-modalStore.close(ModalType.ERROR);
+close(ModalType.ERROR);
 // → Автоматически показывается WarningModal (priority: 100)
 
 // Закрываем warning
-modalStore.close(ModalType.WARNING);
+close(ModalType.WARNING);
 // → Автоматически показывается InfoModal (priority: 50)
 
 // Закрываем info
-modalStore.close(ModalType.INFO);
+close(ModalType.INFO);
 // → ModalLayer рендерит null
+```
+
+## Оптимизация рендеров
+
+### ✅ Хорошо (оптимизировано):
+```typescript
+// Подписка только на open
+const open = useModalStore((state) => state.open);
+
+// Подписка только на currentModal
+const currentModal = useModalStore((state) => state.currentModal);
+```
+
+### ⚠️ Осторожно (может вызвать лишние рендеры):
+```typescript
+// Подписка на весь store
+const { open, close, modals, currentModal } = useModalStore();
+```
+
+### 🎯 Лучшая практика:
+```typescript
+// Выбирайте только то, что нужно
+const Component = () => {
+  const currentModal = useModalStore((state) => state.currentModal);
+  const hasModals = useModalStore((state) => state.hasModals);
+  
+  // Для действий можно без селектора (они не меняются)
+  const { open, close } = useModalStore();
+};
 ```
 
 ## Расположение файлов
 
-- **Store**: `libs/core/src/stores/modal.store.ts`
+- **Store**: `libs/core/src/stores/modal.store.ts` (Zustand)
 - **UI Layer**: `libs/ui/src/components/ModalLayer/ModalLayer.tsx`
 - **Base Modal**: `libs/ui/src/components/Modal/Modal.tsx`
 - **Example Usage**: `apps/web-app/src/app/components/DemoPanel/DemoPanel.tsx`
 
 ## API Reference
 
-### ModalStore
+### useModalStore
 
-| Метод | Параметры | Описание |
-|-------|-----------|----------|
-| `open<T>(config)` | `ModalConfig<T>` | Открыть модалку |
-| `close(id)` | `ModalType \| string` | Закрыть по ID |
-| `closeCurrent()` | - | Закрыть текущую |
-| `closeAll()` | - | Закрыть все |
-| `isOpen(id)` | `ModalType \| string` | Проверить открыта ли |
-| `handleEscape()` | - | Обработать Escape |
-| `handleOverlayClick()` | - | Обработать клик на overlay |
+| Свойство/Метод | Тип | Описание |
+|----------------|-----|----------|
+| `modals` | `ModalConfig[]` | Массив всех модалок |
+| `currentModal` | `ModalConfig \| null` | Текущая активная (computed) |
+| `hasModals` | `boolean` | Есть ли модалки (computed) |
+| `count` | `number` | Количество модалок (computed) |
+| `open(config)` | `(config: ModalConfig) => void` | Открыть модалку |
+| `close(id)` | `(id: ModalType \| string) => void` | Закрыть по ID |
+| `closeCurrent()` | `() => void` | Закрыть текущую |
+| `closeAll()` | `() => void` | Закрыть все |
+| `isOpen(id)` | `(id: ModalType \| string) => boolean` | Проверить открыта ли |
+| `handleEscape()` | `() => void` | Обработать Escape |
+| `handleOverlayClick()` | `() => void` | Обработать клик на overlay |
 
 ### ModalConfig
 
@@ -339,4 +453,26 @@ interface ModalProps {
 }
 ```
 
-Система полностью реактивная благодаря MobX и обеспечивает плавное управление модальными окнами любой сложности.
+## Миграция с MobX на Zustand
+
+### Было (MobX):
+```typescript
+import { observer, useRootStore } from '@nx-react-architecture/core';
+
+const Component = observer(() => {
+  const { modalStore } = useRootStore();
+  modalStore.open({ ... });
+});
+```
+
+### Стало (Zustand):
+```typescript
+import { useModalStore } from '@nx-react-architecture/core';
+
+const Component = () => {  // Без observer!
+  const open = useModalStore((state) => state.open);
+  open({ ... });
+};
+```
+
+Система полностью реактивная благодаря Zustand и обеспечивает высокопроизводительное управление модальными окнами любой сложности.

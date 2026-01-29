@@ -13,8 +13,13 @@ export type {
 // Component Registry Store
 export { ComponentRegistryStore } from './component-registry.store';
 export type { ModalConfig } from './modal.store';
-// Modal Store
-export { ModalPriority, ModalStore, ModalType } from './modal.store';
+// Modal Store (Zustand)
+export {
+  getCurrentModal,
+  ModalPriority,
+  ModalType,
+  useModalStore,
+} from './modal.store';
 export type { AssetInfo } from './preloader.store';
 // Preloader Store
 export { PreloaderStore } from './preloader.store';
@@ -26,7 +31,6 @@ export {
   useAlertStore,
   useAppStore,
   useComponentRegistry,
-  useModalStore,
   usePreloaderStore,
   useRootStore,
   useTechScreenStore,

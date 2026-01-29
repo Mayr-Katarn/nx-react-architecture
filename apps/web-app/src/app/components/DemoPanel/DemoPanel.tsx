@@ -4,6 +4,7 @@ import {
   ModalPriority,
   ModalType,
   observer,
+  useModalStore,
   useRootStore,
 } from '@nx-react-architecture/core';
 import { useTranslation } from '@nx-react-architecture/i18n';
@@ -57,8 +58,8 @@ const ConfirmModal = observer<{ onClose: () => void; message?: string }>(
  * DemoPanel — панель с примерами использования всех систем.
  */
 export const DemoPanel = observer<{ dark?: boolean }>(({ dark }) => {
-  const { alertStore, modalStore, techScreenStore, preloaderStore } =
-    useRootStore();
+  const { alertStore, techScreenStore, preloaderStore } = useRootStore();
+  const { open: openModal } = useModalStore();
   const { t } = useTranslation();
   const analytics = useAnalytics();
   const api = useApi();
@@ -85,8 +86,8 @@ export const DemoPanel = observer<{ dark?: boolean }>(({ dark }) => {
   };
 
   // === MODALS ===
-  const openModal = () => {
-    modalStore.open({
+  const handleOpenModal = () => {
+    openModal({
       id: ModalType.CONFIRM,
       component: ConfirmModal,
       props: { message: 'This is a demo modal with priority system.' },
@@ -95,8 +96,8 @@ export const DemoPanel = observer<{ dark?: boolean }>(({ dark }) => {
     analytics.track('demo_modal', { action: 'open' });
   };
 
-  const openHighPriorityModal = () => {
-    modalStore.open({
+  const handleOpenHighPriorityModal = () => {
+    openModal({
       id: ModalType.WARNING,
       component: ConfirmModal,
       props: { message: 'This modal has HIGH priority!' },
@@ -221,14 +222,14 @@ export const DemoPanel = observer<{ dark?: boolean }>(({ dark }) => {
           <button
             type="button"
             className={`${styles.button} ${styles.buttonPrimary}`}
-            onClick={openModal}
+            onClick={handleOpenModal}
           >
             Open Modal
           </button>
           <button
             type="button"
             className={`${styles.button} ${styles.buttonWarning}`}
-            onClick={openHighPriorityModal}
+            onClick={handleOpenHighPriorityModal}
           >
             High Priority
           </button>

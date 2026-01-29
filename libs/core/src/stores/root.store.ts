@@ -3,7 +3,6 @@ import { createContext, useContext } from 'react';
 import { AlertStore } from './alert.store';
 import { AppStore } from './app.store';
 import { ComponentRegistryStore } from './component-registry.store';
-import { ModalStore } from './modal.store';
 import { PreloaderStore } from './preloader.store';
 import { TechScreenStore } from './tech-screen.store';
 
@@ -40,11 +39,6 @@ export class RootStore {
   techScreenStore: TechScreenStore;
 
   /**
-   * Хранилище модальных окон
-   */
-  modalStore: ModalStore;
-
-  /**
    * Хранилище алертов
    */
   alertStore: AlertStore;
@@ -58,7 +52,6 @@ export class RootStore {
     this.appStore = new AppStore(this);
     this.preloaderStore = new PreloaderStore(this);
     this.techScreenStore = new TechScreenStore(this);
-    this.modalStore = new ModalStore(this);
     this.alertStore = new AlertStore(this);
     this.componentRegistry = new ComponentRegistryStore(this);
 
@@ -113,13 +106,6 @@ export function usePreloaderStore(): PreloaderStore {
  */
 export function useTechScreenStore(): TechScreenStore {
   return useRootStore().techScreenStore;
-}
-
-/**
- * Hook для доступа к ModalStore
- */
-export function useModalStore(): ModalStore {
-  return useRootStore().modalStore;
 }
 
 /**

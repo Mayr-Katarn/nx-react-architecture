@@ -1,10 +1,9 @@
-import { useModalStore } from '@nx-react-architecture/core';
-import { observer } from 'mobx-react-lite';
+import { getCurrentModal, useModalStore } from '@nx-react-architecture/core';
 
 /**
  * ModalLayer — слой рендеринга модальных окон.
  *
- * Автоматически отображает текущую активную модалку из ModalStore.
+ * Автоматически отображает текущую активную модалку из ModalStore (Zustand).
  * Должен быть размещён в корне приложения.
  *
  * @example
@@ -17,21 +16,21 @@ import { observer } from 'mobx-react-lite';
  * </div>
  * ```
  */
-export const ModalLayer = observer(() => {
-  const modalStore = useModalStore();
-  const current = modalStore.currentModal;
+export const ModalLayer = () => {
+  // Вычисляем currentModal через селектор
+  const currentModal = useModalStore((state) => getCurrentModal(state.modals));
+  const close = useModalStore((state) => state.close);
 
-  if (!current) return null;
+  if (!currentModal) return null;
 
-  const { component: Component, props, id } = current;
+  const { component: Component, props, id } = currentModal;
 
   const handleClose = () => {
-    modalStore.close(id);
+    close(id);
   };
 
-  // Если компонент — это полноценная модалка, рендерим как есть
-  // Если нет — оборачиваем в Modal
+  // Рендерим компонент с его props + добавляем onClose
   return <Component {...props} onClose={handleClose} />;
-});
+};
 
 export default ModalLayer;

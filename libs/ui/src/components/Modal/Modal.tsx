@@ -31,9 +31,13 @@ export interface ModalProps {
  *
  * @example
  * ```tsx
+ * import { useModalStore } from '@nx-react-architecture/core';
+ *
+ * const { close } = useModalStore();
+ *
  * <Modal
  *   title="Confirm"
- *   onClose={() => modalStore.close('confirm')}
+ *   onClose={() => close('confirm')}
  *   footer={
  *     <>
  *       <Button onClick={handleCancel}>Cancel</Button>

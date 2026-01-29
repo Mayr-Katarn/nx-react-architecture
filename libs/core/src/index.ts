@@ -18,7 +18,6 @@ export type {
   ComponentPosition,
   ComponentRef,
   ComponentSize,
-  ModalConfig,
   TechScreenConfig,
   TechScreenType,
 } from './stores';
@@ -30,9 +29,8 @@ export {
   AppStore,
   // Component Registry
   ComponentRegistryStore,
-  // Modal
+  // Modal (Zustand)
   ModalPriority,
-  ModalStore,
   ModalType,
   // Preloader
   PreloaderStore,
@@ -45,11 +43,13 @@ export {
   useAlertStore,
   useAppStore,
   useComponentRegistry,
-  useModalStore,
   usePreloaderStore,
   useRootStore,
   useTechScreenStore,
 } from './stores';
+export type { ModalConfig } from './stores/modal.store';
+// Modal Types & Hook (Zustand)
+export { getCurrentModal, useModalStore } from './stores/modal.store';
 
 // ViewModels
 export { AppViewModelBase } from './view-models';

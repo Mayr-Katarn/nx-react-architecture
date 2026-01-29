@@ -1,6 +1,5 @@
-import { makeAutoObservable, observable } from 'mobx';
 import type { ComponentType } from 'react';
-import type { RootStore } from './root.store';
+import { create } from 'zustand';
 
 /**
  * Приоритеты модальных окон
@@ -49,158 +48,156 @@ export interface ModalConfig<TProps = Record<string, unknown>> {
 }
 
 /**
- * ModalStore — управление модальными окнами с приоритетами.
+ * Состояние модального store
+ */
+interface ModalState {
+  /** Очередь модальных окон */
+  modals: ModalConfig<Record<string, unknown>>[];
+}
+
+/**
+ * Действия модального store
+ */
+interface ModalActions {
+  /** Открыть модальное окно */
+  open: <TProps = Record<string, unknown>>(config: ModalConfig<TProps>) => void;
+  /** Закрыть модальное окно по id */
+  close: (id: ModalType | string) => void;
+  /** Закрыть текущую модалку */
+  closeCurrent: () => void;
+  /** Закрыть все модалки */
+  closeAll: () => void;
+  /** Проверить, открыта ли модалка */
+  isOpen: (id: ModalType | string) => boolean;
+  /** Обработка нажатия Escape */
+  handleEscape: () => void;
+  /** Обработка клика по overlay */
+  handleOverlayClick: () => void;
+}
+
+/**
+ * Полный тип store
+ */
+type ModalStore = ModalState & ModalActions;
+
+/**
+ * Вычисляет текущую активную модалку (с наивысшим приоритетом)
+ */
+export const getCurrentModal = (
+  modals: ModalConfig<Record<string, unknown>>[],
+): ModalConfig | null => {
+  if (modals.length === 0) return null;
+
+  // Сортировка по приоритету (desc)
+  const sorted = [...modals].sort(
+    (a, b) =>
+      (b.priority ?? ModalPriority.NORMAL) -
+      (a.priority ?? ModalPriority.NORMAL),
+  );
+
+  return sorted[0] ?? null;
+};
+
+/**
+ * useModalStore — Zustand store для управления модальными окнами с приоритетами.
  *
  * Модалки с более высоким приоритетом показываются поверх других.
  * В один момент времени видна только одна модалка (с наивысшим приоритетом).
  *
  * @example
  * ```tsx
- * const { modalStore } = useRootStore();
+ * import { useModalStore, getCurrentModal, ModalType, ModalPriority } from '@nx-react-architecture/core';
  *
- * // Открыть модалку со стандартным типом
- * modalStore.open({
- *   id: ModalType.CONFIRM,
- *   component: ConfirmModal,
- *   props: { title: 'Delete item?' },
- *   priority: ModalPriority.HIGH,
- * });
+ * function MyComponent() {
+ *   const { open, close } = useModalStore();
+ *   const currentModal = useModalStore((state) => getCurrentModal(state.modals));
  *
- * // Или с кастомным id
- * modalStore.open({
- *   id: 'my-custom-modal',
- *   component: CustomModal,
- *   priority: ModalPriority.NORMAL,
- * });
+ *   // Открыть модалку со стандартным типом
+ *   const handleOpen = () => {
+ *     open({
+ *       id: ModalType.CONFIRM,
+ *       component: ConfirmModal,
+ *       props: { title: 'Delete item?' },
+ *       priority: ModalPriority.HIGH,
+ *     });
+ *   };
  *
- * // Закрыть конкретную
- * modalStore.close(ModalType.CONFIRM);
+ *   // Закрыть конкретную
+ *   const handleClose = () => close(ModalType.CONFIRM);
  *
- * // Закрыть все
- * modalStore.closeAll();
+ *   return <button onClick={handleOpen}>Open Modal</button>;
+ * }
  * ```
  */
-export class ModalStore {
-  readonly rootStore: RootStore;
+export const useModalStore = create<ModalStore>()((set, get) => ({
+  // State
+  modals: [],
 
-  /**
-   * Очередь модальных окон
-   */
-  modals: ModalConfig<any>[] = [];
+  // Actions
+  open: (config) => {
+    const { modals } = get();
 
-  constructor(rootStore: RootStore) {
-    this.rootStore = rootStore;
-    makeAutoObservable(
-      this,
-      { modals: observable.shallow },
-      { autoBind: true },
-    );
-  }
-
-  /**
-   * Текущая активная модалка (с наивысшим приоритетом)
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get currentModal(): ModalConfig<any> | null {
-    if (this.modals.length === 0) return null;
-
-    // Сортировка по приоритету (desc) и времени добавления
-    const sorted = [...this.modals].sort(
-      (a, b) =>
-        (b.priority ?? ModalPriority.NORMAL) -
-        (a.priority ?? ModalPriority.NORMAL),
-    );
-
-    return sorted[0] ?? null;
-  }
-
-  /**
-   * Есть ли открытые модалки
-   */
-  get hasModals(): boolean {
-    return this.modals.length > 0;
-  }
-
-  /**
-   * Количество модалок в очереди
-   */
-  get count(): number {
-    return this.modals.length;
-  }
-
-  /**
-   * Открыть модальное окно
-   */
-  open<TProps = Record<string, unknown>>(config: ModalConfig<TProps>): void {
     // Проверить, не открыта ли уже модалка с таким id
-    if (this.modals.some((m) => m.id === config.id)) {
+    if (modals.some((m) => m.id === config.id)) {
       console.warn(`Modal with id "${config.id}" is already open`);
       return;
     }
 
-    this.modals.push({
+    const normalizedConfig = {
       ...config,
       priority: config.priority ?? ModalPriority.NORMAL,
       closeOnOverlay: config.closeOnOverlay ?? true,
       closeOnEscape: config.closeOnEscape ?? true,
-    });
-  }
+    } as ModalConfig<Record<string, unknown>>;
 
-  /**
-   * Закрыть модальное окно по id
-   */
-  close(id: ModalType | string): void {
-    const modal = this.modals.find((m) => m.id === id);
+    set({
+      modals: [...modals, normalizedConfig],
+    });
+  },
+
+  close: (id) => {
+    const { modals } = get();
+    const modal = modals.find((m) => m.id === id);
+
     if (modal) {
       modal.onClose?.();
-      this.modals = this.modals.filter((m) => m.id !== id);
+      set({ modals: modals.filter((m) => m.id !== id) });
     }
-  }
+  },
 
-  /**
-   * Закрыть текущую модалку
-   */
-  closeCurrent(): void {
-    const current = this.currentModal;
+  closeCurrent: () => {
+    const { modals, close } = get();
+    const current = getCurrentModal(modals);
     if (current) {
-      this.close(current.id);
+      close(current.id);
     }
-  }
+  },
 
-  /**
-   * Закрыть все модалки
-   */
-  closeAll(): void {
-    this.modals.forEach((m) => {
+  closeAll: () => {
+    const { modals } = get();
+    modals.forEach((m) => {
       m.onClose?.();
     });
-    this.modals = [];
-  }
+    set({ modals: [] });
+  },
 
-  /**
-   * Проверить, открыта ли модалка
-   */
-  isOpen(id: ModalType | string): boolean {
-    return this.modals.some((m) => m.id === id);
-  }
+  isOpen: (id) => {
+    return get().modals.some((m) => m.id === id);
+  },
 
-  /**
-   * Обработка нажатия Escape
-   */
-  handleEscape(): void {
-    const current = this.currentModal;
+  handleEscape: () => {
+    const { modals, close } = get();
+    const current = getCurrentModal(modals);
     if (current?.closeOnEscape) {
-      this.close(current.id);
+      close(current.id);
     }
-  }
+  },
 
-  /**
-   * Обработка клика по overlay
-   */
-  handleOverlayClick(): void {
-    const current = this.currentModal;
+  handleOverlayClick: () => {
+    const { modals, close } = get();
+    const current = getCurrentModal(modals);
     if (current?.closeOnOverlay) {
-      this.close(current.id);
+      close(current.id);
     }
-  }
-}
+  },
+}));

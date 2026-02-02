@@ -1,10 +1,23 @@
-import { useState } from 'react';
 import { observer, useAppStore } from '@nx-react-architecture/core';
-import { HeroCard, EnemyCard, GamePhases, QuickRules, HeroActions } from '../components';
-import { heroes, mobs, roamingMonsters, bosses } from '../data';
+import { useState } from 'react';
+import {
+  EnemyCard,
+  GamePhases,
+  GameSetup,
+  HeroActions,
+  HeroesSection,
+  QuickRules,
+} from '../components';
+import { bosses, mobs, roamingMonsters } from '../data';
 import styles from './app.module.css';
 
-type TabId = 'rules' | 'actions' | 'heroes' | 'enemies' | 'phases' | 'reference';
+type TabId =
+  | 'rules'
+  | 'actions'
+  | 'heroes'
+  | 'enemies'
+  | 'phases'
+  | 'reference';
 
 interface Tab {
   id: TabId;
@@ -81,85 +94,104 @@ export const App = observer(() => {
   );
 });
 
-const RulesSection = () => (
-  <div className={styles.section}>
-    <div className={styles.welcomeCard}>
-      <h2 className={styles.sectionTitle}>🏰 Добро пожаловать в Преисподню</h2>
-      <p className={styles.welcomeText}>
-        <strong>«Кромешная тьма: Преисподняя»</strong> — это кооперативная игра
-        для 1-6 игроков, где вы берёте на себя роли Светоносных — избранных
-        героев, обученных бороться с нарастающей Тьмой.
-      </p>
-    </div>
+const RulesSection = () => {
+  const [showSetup, setShowSetup] = useState(false);
 
-    <div className={styles.overviewGrid}>
-      <div className={styles.overviewCard}>
-        <span className={styles.overviewIcon}>🎯</span>
-        <h3>Цель игры</h3>
-        <p>
-          Выполните задачу приключения до того, как Тьма поглотит героев. Исследуйте
-          подземелья, сражайтесь с монстрами и находите сокровища.
+  return (
+    <div className={styles.section}>
+      <div className={styles.welcomeCard}>
+        <h2 className={styles.sectionTitle}>
+          🏰 Добро пожаловать в Преисподню
+        </h2>
+        <p className={styles.welcomeText}>
+          <strong>«Кромешная тьма: Преисподняя»</strong> — это кооперативная
+          игра для 1-6 игроков, где вы берёте на себя роли Светоносных —
+          избранных героев, обученных бороться с нарастающей Тьмой.
         </p>
       </div>
 
-      <div className={styles.overviewCard}>
-        <span className={styles.overviewIcon}>👥</span>
-        <h3>Игроки</h3>
-        <p>
-          1-6 игроков. Каждый управляет уникальным героем с особыми
-          способностями и механиками класса.
-        </p>
+      {/* Переключатель между обзором и подготовкой */}
+      <div className={styles.filterButtons}>
+        <button
+          type="button"
+          className={`${styles.filterBtn} ${!showSetup ? styles.active : ''}`}
+          onClick={() => setShowSetup(false)}
+        >
+          📖 Обзор игры
+        </button>
+        <button
+          type="button"
+          className={`${styles.filterBtn} ${showSetup ? styles.active : ''}`}
+          onClick={() => setShowSetup(true)}
+        >
+          📋 Подготовка к игре
+        </button>
       </div>
 
-      <div className={styles.overviewCard}>
-        <span className={styles.overviewIcon}>🎲</span>
-        <h3>Механики</h3>
-        <p>
-          Кубики атаки и защиты, сумрачные способности в тёмных зонах,
-          повышение уровня и сбор экипировки.
-        </p>
-      </div>
+      {!showSetup ? (
+        <>
+          <div className={styles.overviewGrid}>
+            <div className={styles.overviewCard}>
+              <span className={styles.overviewIcon}>🎯</span>
+              <h3>Цель игры</h3>
+              <p>
+                Выполните задачу приключения до того, как Тьма поглотит героев.
+                Исследуйте подземелья, сражайтесь с монстрами и находите
+                сокровища.
+              </p>
+            </div>
 
-      <div className={styles.overviewCard}>
-        <span className={styles.overviewIcon}>⚡</span>
-        <h3>Победа и поражение</h3>
-        <p>
-          Победа — выполнение условия приключения. Поражение — если нет жетонов
-          искры жизни при оглушении героя.
-        </p>
-      </div>
-    </div>
+            <div className={styles.overviewCard}>
+              <span className={styles.overviewIcon}>👥</span>
+              <h3>Игроки</h3>
+              <p>
+                1-6 игроков. Каждый управляет уникальным героем с особыми
+                способностями и механиками класса.
+              </p>
+            </div>
 
-    <div className={styles.storyCard}>
-      <h3 className={styles.storyTitle}>📖 Предыстория</h3>
-      <p className={styles.storyText}>
-        Минуло десять лет после первого вторжения Кромешной тьмы. Светоносные
-        основали гильдию героев для защиты мира. Но демоны и ангелы хлынули
-        сквозь новые разломы между измерениями. Кромешная тьма вернулась, и
-        теперь героям предстоит спуститься в саму Преисподнюю, чтобы найти
-        источник Тьмы и покончить с ней раз и навсегда.
-      </p>
-    </div>
-  </div>
-);
+            <div className={styles.overviewCard}>
+              <span className={styles.overviewIcon}>🎲</span>
+              <h3>Механики</h3>
+              <p>
+                Кубики атаки и защиты, сумрачные способности в тёмных зонах,
+                повышение уровня и сбор экипировки.
+              </p>
+            </div>
 
-const HeroesSection = () => (
-  <div className={styles.section}>
-    <h2 className={styles.sectionTitle}>🎭 Герои Светоносных</h2>
-    <p className={styles.sectionDescription}>
-      Выберите своего героя. Каждый класс обладает уникальными механиками и
-      способностями.
-    </p>
-    <div className={styles.heroesGrid}>
-      {heroes.map((hero) => (
-        <HeroCard key={hero.id} hero={hero} />
-      ))}
+            <div className={styles.overviewCard}>
+              <span className={styles.overviewIcon}>⚡</span>
+              <h3>Победа и поражение</h3>
+              <p>
+                Победа — выполнение условия приключения. Поражение — если нет
+                жетонов искры жизни при оглушении героя.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.storyCard}>
+            <h3 className={styles.storyTitle}>📖 Предыстория</h3>
+            <p className={styles.storyText}>
+              Минуло десять лет после первого вторжения Кромешной тьмы.
+              Светоносные основали гильдию героев для защиты мира. Но демоны и
+              ангелы хлынули сквозь новые разломы между измерениями. Кромешная
+              тьма вернулась, и теперь героям предстоит спуститься в саму
+              Преисподнюю, чтобы найти источник Тьмы и покончить с ней раз и
+              навсегда.
+            </p>
+          </div>
+        </>
+      ) : (
+        <GameSetup />
+      )}
     </div>
-  </div>
-);
+  );
+};
 
 const EnemiesSection = () => {
-  const [enemyFilter, setEnemyFilter] = useState<'all' | 'mob' | 'roaming' | 'boss'>('all');
+  const [enemyFilter, setEnemyFilter] = useState<
+    'all' | 'mob' | 'roaming' | 'boss'
+  >('all');
 
   const filteredEnemies = {
     all: [...mobs, ...roamingMonsters, ...bosses],

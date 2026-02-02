@@ -12,12 +12,7 @@ export type HeroClass =
 
 export type EnemyType = 'mob' | 'roaming' | 'boss';
 
-export type DiceType =
-  | 'yellow'
-  | 'orange'
-  | 'blue'
-  | 'purple'
-  | 'black';
+export type DiceType = 'yellow' | 'orange' | 'blue' | 'purple' | 'black';
 
 export interface Hero {
   id: string;
@@ -32,6 +27,14 @@ export interface Hero {
   specialMechanic: string;
   color: string;
   icon: string;
+  /** Описание класса героя */
+  description: string;
+  /** Компоненты для подготовки к игре (специфичные для класса) */
+  setupComponents: string[];
+  /** Советы по игре данным классом */
+  gameplayTips: string[];
+  /** Навыки 1-го уровня на выбор */
+  startingSkills: string[];
 }
 
 export interface Enemy {

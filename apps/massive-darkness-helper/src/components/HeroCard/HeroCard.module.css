@@ -1,341 +1,592 @@
-/* Hero Card Container */
-.cardContainer {
-  perspective: 1000px;
-  width: 320px;
-  height: 420px;
+/* ===== Hero Selection Layout ===== */
+.heroesLayout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  min-height: 600px;
+}
+
+@media (max-width: 900px) {
+  .heroesLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Hero List (Left Sidebar) ===== */
+.heroList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.heroListItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+  border: 2px solid #3a2a4a;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.cardContainer:hover {
-  transform: translateY(-8px);
+.heroListItem:hover {
+  border-color: var(--hero-color, #6b2557);
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
-.cardContainer.expanded {
-  width: 360px;
-  height: 480px;
-}
-
-/* Card Flip Effect */
-.card {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card.flipped {
-  transform: rotateY(180deg);
-}
-
-/* Card Faces */
-.cardFront,
-.cardBack {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  border-radius: 16px;
+.heroListItem.active {
+  border-color: var(--hero-color, #6b2557);
   background: linear-gradient(
     145deg,
-    rgba(26, 26, 46, 0.95) 0%,
-    rgba(15, 15, 26, 0.98) 100%
+    color-mix(in srgb, var(--hero-color) 15%, #1a1a2e) 0%,
+    #0f0f1a 100%
   );
-  border: 2px solid var(--hero-color, #6b2557);
   box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.5),
     0 0 20px color-mix(in srgb, var(--hero-color) 30%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    inset 0 0 30px color-mix(in srgb, var(--hero-color) 10%, transparent);
+}
+
+.heroListIcon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.heroListItem.active .heroListIcon {
+  border-color: var(--hero-color);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--hero-color) 40%, transparent);
+}
+
+.heroListInfo {
+  flex: 1;
+}
+
+.heroListName {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e8e6e3;
+}
+
+.heroListClass {
+  font-size: 0.8rem;
+  color: var(--hero-color, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.heroListStats {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.heroListStat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* ===== Hero Detail Panel (Right Side) ===== */
+.heroDetail {
+  background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+  border: 2px solid var(--hero-color, #3a2a4a);
+  border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.4),
+    0 0 30px color-mix(in srgb, var(--hero-color) 20%, transparent);
 }
 
-.cardBack {
-  transform: rotateY(180deg);
-}
-
-/* Glow Animation */
-.cardFront::before,
-.cardBack::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(
-    from 0deg,
-    transparent,
-    var(--hero-color),
-    transparent 30%
-  );
-  animation: rotate 4s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.cardContainer:hover .cardFront::before,
-.cardContainer:hover .cardBack::before {
-  opacity: 0.3;
-}
-
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.cardFront::after,
-.cardBack::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  background: linear-gradient(
-    145deg,
-    rgba(26, 26, 46, 0.98) 0%,
-    rgba(15, 15, 26, 1) 100%
-  );
-  border-radius: 14px;
-  z-index: 0;
-}
-
-/* Content positioning */
-.cardHeader,
-.statsContainer,
-.abilities,
-.flipButton,
-.mechanicSection,
-.classFeatures {
+/* Hero Header */
+.heroHeader {
   position: relative;
-  z-index: 1;
-}
-
-/* Header */
-.cardHeader {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
+  padding: 2rem;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--hero-color) 20%, transparent) 0%,
+    color-mix(in srgb, var(--hero-color) 25%, transparent) 0%,
     transparent 100%
   );
-  border-bottom: 1px solid color-mix(in srgb, var(--hero-color) 30%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--hero-color) 30%, transparent);
 }
 
-.heroIcon {
-  font-size: 2.5rem;
-  filter: drop-shadow(0 0 10px var(--hero-color));
-  animation: pulse 2s ease-in-out infinite;
+.heroHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-@keyframes pulse {
+.heroIconLarge {
+  font-size: 4rem;
+  filter: drop-shadow(0 0 20px var(--hero-color));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
   0%,
   100% {
-    transform: scale(1);
+    transform: translateY(0);
   }
   50% {
-    transform: scale(1.1);
+    transform: translateY(-10px);
   }
 }
 
-.heroInfo {
-  display: flex;
-  flex-direction: column;
+.heroTitleBlock {
+  flex: 1;
 }
 
 .heroName {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 2.25rem;
   font-weight: 700;
   color: #fff;
-  text-shadow: 0 0 10px var(--hero-color);
+  text-shadow: 0 0 20px var(--hero-color);
 }
 
-.heroClass {
-  font-size: 0.9rem;
+.heroClassName {
+  font-size: 1rem;
   color: var(--hero-color);
-  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  font-weight: 500;
 }
 
-/* Stats */
-.statsContainer {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  padding: 1rem;
+.heroDescription {
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  color: #b0b0b0;
+  line-height: 1.6;
+  font-style: italic;
 }
 
-.stat {
+/* Stats Bar */
+.statsBar {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.75rem 1.5rem;
+  gap: 1.5rem;
+  padding: 1.25rem 2rem;
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
-.stat:hover {
-  transform: scale(1.05);
+.statBlock:hover {
   border-color: var(--hero-color);
-  box-shadow: 0 0 15px color-mix(in srgb, var(--hero-color) 30%, transparent);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--hero-color) 20%, transparent);
 }
 
 .statIcon {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
 }
 
 .statValue {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
+  line-height: 1;
 }
 
 .statLabel {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #888;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-/* Abilities */
-.abilities {
+/* Tabs Navigation */
+.tabsNav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tabButton {
   flex: 1;
   padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #888;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tabButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #c9c9c9;
+}
+
+.tabButton.active {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--hero-color) 30%, transparent) 0%,
+    color-mix(in srgb, var(--hero-color) 10%, transparent) 100%
+  );
+  border-color: var(--hero-color);
+  color: #fff;
+}
+
+.tabIcon {
+  font-size: 1.1rem;
+}
+
+/* Tab Content */
+.tabContent {
+  flex: 1;
+  padding: 1.5rem 2rem;
   overflow-y: auto;
 }
 
-.ability {
+/* Abilities Section */
+.abilitiesGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.abilityCard {
   display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.abilityCard:hover {
+  border-color: color-mix(in srgb, var(--hero-color) 50%, transparent);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.abilityIcon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--hero-color) 20%, transparent) 0%,
+    transparent 100%
+  );
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--hero-color) 30%, transparent);
+  flex-shrink: 0;
+}
+
+.abilityContent {
+  flex: 1;
+}
+
+.abilityLabel {
+  font-size: 0.75rem;
+  color: var(--hero-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.abilityText {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #c9c9c9;
+  line-height: 1.5;
+}
+
+/* Mechanic Section */
+.mechanicCard {
+  padding: 1.5rem;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--hero-color) 10%, rgba(0, 0, 0, 0.3)) 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--hero-color) 30%, transparent);
+  margin-bottom: 1.5rem;
+}
+
+.mechanicTitle {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--hero-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mechanicText {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #b0b0b0;
+  line-height: 1.6;
+}
+
+/* Skills Section */
+.skillsSection {
+  margin-top: 1.5rem;
+}
+
+.sectionTitle {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: #c9a0dc;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.skillsList {
+  display: flex;
+  flex-direction: column;
   gap: 0.75rem;
-  padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.2);
+}
+
+.skillItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
 }
 
-.ability:hover {
+.skillItem:hover {
+  border-color: color-mix(in srgb, var(--hero-color) 40%, transparent);
   background: rgba(0, 0, 0, 0.4);
-  border-color: color-mix(in srgb, var(--hero-color) 30%, transparent);
 }
 
-.abilityIcon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
+.skillBullet {
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+  background: var(--hero-color);
+  border-radius: 50%;
+  margin-top: 0.5rem;
+  box-shadow: 0 0 10px var(--hero-color);
 }
 
-.abilityContent {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.abilityLabel {
-  font-size: 0.7rem;
-  color: var(--hero-color);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-}
-
-.abilityText {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #c9c9c9;
-  line-height: 1.4;
-}
-
-/* Flip Button */
-.flipButton {
-  margin: 0.75rem 1rem 1rem;
-  padding: 0.75rem;
-  border: 1px solid var(--hero-color);
-  border-radius: 8px;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--hero-color) 20%, transparent) 0%,
-    transparent 100%
-  );
-  color: #fff;
+.skillText {
   font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.flipButton:hover {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--hero-color) 40%, transparent) 0%,
-    color-mix(in srgb, var(--hero-color) 10%, transparent) 100%
-  );
-  box-shadow: 0 0 20px color-mix(in srgb, var(--hero-color) 30%, transparent);
-  transform: translateY(-2px);
-}
-
-/* Back Side */
-.mechanicSection {
-  padding: 1rem;
-  margin: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.mechanicTitle,
-.featuresTitle {
-  margin: 0 0 0.5rem;
-  font-size: 1rem;
-  color: var(--hero-color);
-}
-
-.mechanicText {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #b0b0b0;
+  color: #c9c9c9;
   line-height: 1.5;
 }
 
-.classFeatures {
-  flex: 1;
-  padding: 0 1rem;
-  overflow-y: auto;
+/* Components Section */
+.componentsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
 }
 
-.featuresList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.componentItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
-.featureItem {
-  padding: 0.5rem 0;
-  font-size: 0.85rem;
+.componentItem:hover {
+  border-color: var(--hero-color);
+  transform: translateY(-2px);
+}
+
+.componentIcon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+.componentText {
+  font-size: 0.9rem;
   color: #c9c9c9;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
 }
 
-.featureItem:last-child {
-  border-bottom: none;
+/* Tips Section */
+.tipsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.featureItem::before {
-  content: '▸ ';
-  color: var(--hero-color);
+.tipItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--hero-color) 10%, rgba(0, 0, 0, 0.3)) 0%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  border-radius: 10px;
+  border-left: 3px solid var(--hero-color);
+  transition: all 0.3s ease;
 }
 
-.featureItem:hover {
-  color: #fff;
-  padding-left: 0.5rem;
+.tipItem:hover {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--hero-color) 15%, rgba(0, 0, 0, 0.4)) 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
+.tipIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.tipText {
+  font-size: 0.9rem;
+  color: #c9c9c9;
+  line-height: 1.5;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  text-align: center;
+  color: #666;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.emptyText {
+  font-size: 1.1rem;
+  color: #888;
+}
+
+/* Mobile Styles */
+@media (max-width: 900px) {
+  .heroesLayout {
+    min-height: auto;
+  }
+
+  .heroList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .heroListItem {
+    flex-direction: column;
+    padding: 0.75rem;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .heroListItem:hover {
+    transform: translateY(-3px);
+  }
+
+  .heroListStats {
+    display: none;
+  }
+
+  .heroListName {
+    font-size: 0.9rem;
+  }
+
+  .heroHeader {
+    padding: 1.5rem;
+  }
+
+  .heroName {
+    font-size: 1.75rem;
+  }
+
+  .statsBar {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+
+  .statBlock {
+    flex: 1;
+    min-width: 100px;
+    justify-content: center;
+  }
+
+  .tabsNav {
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+  }
+
+  .tabButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .tabContent {
+    padding: 1rem;
+  }
+
+  .componentsList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .heroList {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

@@ -20,10 +20,6 @@ export default defineConfig(({ mode }) => {
       port: Number(env.MD_PORT) || 4001,
       host: '0.0.0.0', // Доступно в локальной сети
     },
-    preview: {
-      port: Number(env.MD_PORT) || 4001,
-      host: '0.0.0.0',
-    },
     plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
     build: {
       outDir: '../../dist/apps/massive-darkness-helper',

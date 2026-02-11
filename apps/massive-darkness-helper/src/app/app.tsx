@@ -7,6 +7,7 @@ import {
   HeroActions,
   HeroesSection,
   QuickRules,
+  ScenarioGenerator,
 } from '../components';
 import { bosses, mobs, roamingMonsters } from '../data';
 import styles from './app.module.css';
@@ -17,7 +18,8 @@ type TabId =
   | 'heroes'
   | 'enemies'
   | 'phases'
-  | 'reference';
+  | 'reference'
+  | 'scenarios';
 
 interface Tab {
   id: TabId;
@@ -27,6 +29,7 @@ interface Tab {
 
 const tabs: Tab[] = [
   { id: 'rules', label: 'Правила', icon: '📜' },
+  { id: 'scenarios', label: 'Сценарии', icon: '🎲' },
   { id: 'actions', label: 'Действия', icon: '🎯' },
   { id: 'heroes', label: 'Герои', icon: '🎭' },
   { id: 'enemies', label: 'Враги', icon: '👹' },
@@ -73,6 +76,7 @@ export const App = observer(() => {
 
       <main className={styles.main}>
         {activeTab === 'rules' && <RulesSection />}
+        {activeTab === 'scenarios' && <ScenarioGenerator />}
         {activeTab === 'actions' && <HeroActions />}
         {activeTab === 'heroes' && <HeroesSection />}
         {activeTab === 'enemies' && <EnemiesSection />}

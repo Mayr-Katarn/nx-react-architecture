@@ -108,21 +108,70 @@
   justify-content: center;
   gap: 0.25rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   z-index: 5;
 }
 
+/* Position each phase node on the circle */
+.phaseNodeTop {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.phaseNodeRight {
+  top: 50%;
+  right: 0;
+  transform: translate(0, -50%);
+}
+
+.phaseNodeBottom {
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.phaseNodeLeft {
+  top: 50%;
+  left: 0;
+  transform: translate(0, -50%);
+}
+
+/* Hover: scale up while preserving position */
+.phaseNodeTop:hover,
+.phaseNodeBottom:hover {
+  transform: translate(-50%, 0) scale(1.1);
+}
+
+.phaseNodeRight:hover,
+.phaseNodeLeft:hover {
+  transform: translate(0, -50%) scale(1.1);
+}
+
 .phaseNode:hover {
-  transform: translate(-50%, -50%) scale(1.1) !important;
   border-color: var(--phase-color);
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.4),
     0 0 20px color-mix(in srgb, var(--phase-color) 40%, transparent);
 }
 
+/* Active: larger scale and glow */
+.phaseNodeTop.active,
+.phaseNodeBottom.active {
+  transform: translate(-50%, 0) scale(1.15);
+}
+
+.phaseNodeRight.active,
+.phaseNodeLeft.active {
+  transform: translate(0, -50%) scale(1.15);
+}
+
 .phaseNode.active {
-  transform: translate(-50%, -50%) scale(1.15) !important;
   background: linear-gradient(
     145deg,
     color-mix(in srgb, var(--phase-color) 30%, #2a1a3a) 0%,

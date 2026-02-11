@@ -63,9 +63,7 @@ export const GamePhases = () => {
       {/* Phase details panel */}
       <div className={styles.detailsContainer}>
         {activePhase ? (
-          <PhaseDetails
-            phase={gamePhases.find((p) => p.id === activePhase)!}
-          />
+          <PhaseDetails phase={gamePhases.find((p) => p.id === activePhase)!} />
         ) : (
           <div className={styles.selectHint}>
             <span className={styles.hintIcon}>👆</span>
@@ -84,25 +82,21 @@ interface PhaseNodeProps {
   onClick: () => void;
 }
 
-const PhaseNode = ({ phase, index, isActive, onClick }: PhaseNodeProps) => {
-  // Position phases in a circle
-  const positions = [
-    { top: '0', left: '50%', transform: 'translate(-50%, 0)' },
-    { top: '50%', right: '0', transform: 'translate(0, -50%)' },
-    { bottom: '0', left: '50%', transform: 'translate(-50%, 0)' },
-    { top: '50%', left: '0', transform: 'translate(0, -50%)' },
-  ];
+const phasePositionClasses = [
+  styles.phaseNodeTop,
+  styles.phaseNodeRight,
+  styles.phaseNodeBottom,
+  styles.phaseNodeLeft,
+] as const;
 
+const PhaseNode = ({ phase, index, isActive, onClick }: PhaseNodeProps) => {
   return (
     <button
       type="button"
-      className={`${styles.phaseNode} ${isActive ? styles.active : ''}`}
-      style={
-        {
-          ...positions[index],
-          '--phase-color': phase.color,
-        } as React.CSSProperties
-      }
+      className={`${styles.phaseNode} ${phasePositionClasses[index]} ${
+        isActive ? styles.active : ''
+      }`}
+      style={{ '--phase-color': phase.color } as React.CSSProperties}
       onClick={onClick}
     >
       <div className={styles.phaseNumber}>{phase.number}</div>

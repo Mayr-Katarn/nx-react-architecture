@@ -155,7 +155,7 @@
 }
 
 .stepDetail::before {
-  content: '•';
+  content: "•";
   color: #9b59b6;
   font-weight: bold;
 }
@@ -193,7 +193,7 @@
 }
 
 .checkbox:checked::after {
-  content: '✓';
+  content: "✓";
   display: flex;
   align-items: center;
   justify-content: center;
@@ -327,7 +327,7 @@
 }
 
 .tipItem::before {
-  content: '💡 ';
+  content: "💡 ";
 }
 
 /* Reset Button */

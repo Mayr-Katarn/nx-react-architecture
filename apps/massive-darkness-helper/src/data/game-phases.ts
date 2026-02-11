@@ -1,4 +1,4 @@
-import type { GamePhase, DiceInfo, QuickRule } from './types';
+import type { DiceInfo, GamePhase, QuickRule } from './types';
 
 export const gamePhases: GamePhase[] = [
   {
@@ -92,7 +92,8 @@ export const diceInfo: DiceInfo[] = [
     type: 'purple',
     name: 'Фиолетовый кубик сумрака',
     color: '#9c27b0',
-    description: 'Только для героев в тёмной зоне. Активирует сумрачную способность.',
+    description:
+      'Только для героев в тёмной зоне. Активирует сумрачную способность.',
     symbols: ['🌙 Сумрак', '⚔️ Урон', '💧 Мана'],
   },
   {

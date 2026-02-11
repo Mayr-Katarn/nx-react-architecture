@@ -261,8 +261,7 @@ const MovementDiagram = () => {
     // Highlight possible moves
     if (step > 0 && step < 4) {
       const isAdjacent =
-        (Math.abs(row - heroPosition.row) === 1 &&
-          col === heroPosition.col) ||
+        (Math.abs(row - heroPosition.row) === 1 && col === heroPosition.col) ||
         (Math.abs(col - heroPosition.col) === 1 && row === heroPosition.row);
       if (isAdjacent && cell.type !== 'wall') {
         classes += ` ${styles.highlight}`;
@@ -287,21 +286,26 @@ const MovementDiagram = () => {
                   className={getCellClass(rowIdx, colIdx)}
                 >
                   {/* Cell content */}
-                  {cell.type === 'wall' && <span className={styles.wallIcon}>🧱</span>}
+                  {cell.type === 'wall' && (
+                    <span className={styles.wallIcon}>🧱</span>
+                  )}
                   {cell.type === 'door' && (
                     <span className={styles.doorIcon}>
                       {doorOpen ? '🚪' : '🔒'}
                     </span>
                   )}
-                  {cell.treasure && <span className={styles.treasureIcon}>💎</span>}
+                  {cell.treasure && (
+                    <span className={styles.treasureIcon}>💎</span>
+                  )}
                   {cell.enemy && rowIdx === 1 && colIdx === 1 && (
                     <span className={styles.enemyIcon}>👹</span>
                   )}
 
                   {/* Hero position */}
-                  {heroPosition.row === rowIdx && heroPosition.col === colIdx && (
-                    <span className={styles.heroIcon}>🦸</span>
-                  )}
+                  {heroPosition.row === rowIdx &&
+                    heroPosition.col === colIdx && (
+                      <span className={styles.heroIcon}>🦸</span>
+                    )}
 
                   {/* Light/Dark indicator */}
                   {cell.type !== 'wall' && cell.type !== 'door' && (
@@ -310,17 +314,19 @@ const MovementDiagram = () => {
                     </span>
                   )}
                 </div>
-              ))
+              )),
             )}
           </div>
 
           {/* Legend */}
           <div className={styles.legend}>
             <div className={styles.legendItem}>
-              <span className={styles.legendColor} data-type="light" /> Светлая зона
+              <span className={styles.legendColor} data-type="light" /> Светлая
+              зона
             </div>
             <div className={styles.legendItem}>
-              <span className={styles.legendColor} data-type="dark" /> Тёмная зона
+              <span className={styles.legendColor} data-type="dark" /> Тёмная
+              зона
             </div>
             <div className={styles.legendItem}>
               <span>👹</span> Враг
@@ -452,13 +458,21 @@ const AttackTypesDiagram = () => {
           <div className={styles.rangeVisual}>
             <div className={styles.rangeGrid}>
               <div className={styles.rangeCell} />
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
               <div className={styles.rangeCell} />
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
               <div className={`${styles.rangeCell} ${styles.heroCell}`}>🦸</div>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
               <div className={styles.rangeCell} />
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
               <div className={styles.rangeCell} />
             </div>
             <p className={styles.rangeText}>
@@ -476,15 +490,31 @@ const AttackTypesDiagram = () => {
           </div>
           <div className={styles.rangeVisual}>
             <div className={styles.rangeGrid}>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
               <div className={`${styles.rangeCell} ${styles.heroCell}`}>🦸</div>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
-              <div className={`${styles.rangeCell} ${styles.targetCell}`}>👹</div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
+              <div className={`${styles.rangeCell} ${styles.targetCell}`}>
+                👹
+              </div>
             </div>
             <p className={styles.rangeText}>
               <strong>Дальность: 1+</strong>
@@ -506,7 +536,9 @@ const AttackTypesDiagram = () => {
 const DoorOpeningSequence = () => {
   return (
     <div className={styles.diagramSection}>
-      <h3 className={styles.diagramTitle}>🚪 Открытие зала — последовательность</h3>
+      <h3 className={styles.diagramTitle}>
+        🚪 Открытие зала — последовательность
+      </h3>
 
       <div className={styles.sequence}>
         <div className={styles.sequenceStep}>

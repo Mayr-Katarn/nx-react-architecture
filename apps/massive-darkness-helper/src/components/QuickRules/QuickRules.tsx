@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { quickRules, diceInfo } from '../../data/game-phases';
+import { diceInfo, quickRules } from '../../data/game-phases';
 import styles from './QuickRules.module.css';
 
 export const QuickRules = () => {
